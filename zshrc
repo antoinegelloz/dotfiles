@@ -41,7 +41,7 @@ zstyle ':omz:update' frequency 13
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+#ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # You can also set it to another string to have that shown instead of the default red dots.
@@ -178,6 +178,8 @@ if [ -f '/Users/antoinegelloz/google-cloud-sdk/completion.zsh.inc' ]; then . '/U
 export PATH="$HOME/go/bin:$PATH"
 export GPG_TTY=$(tty)
 
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
 
 ####################
 ### Radio France ###
@@ -187,3 +189,14 @@ export STRUKTUR_PATH="$HOME/radiofrance/kubernetes"
 export PATH="$STRUKTUR_PATH/bin:$PATH"
 export AWS_DEFAULT_PROFILE="rf_preprod"
 export VAULT_ADDR="https://vault.dnm.radiofrance.fr"
+
+export BUILDKIT_HOST="unix:///Users/antoinegelloz/.lima/default/sock/buildkitd.sock"
+
+source "$HOMEBREW_PREFIX/opt/kube-ps1/share/kube-ps1.sh"
+PS1='$(kube_ps1)'$PS1
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
