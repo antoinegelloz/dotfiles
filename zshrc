@@ -187,6 +187,8 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 export STRUKTUR_PATH="$HOME/radiofrance/kubernetes"
 export PATH="$STRUKTUR_PATH/bin:$PATH"
+export REFERENTIEL_PATH="$HOME/radiofrance/referentiel-version"
+export HELM_CONFIG_HOME="$REFERENTIEL_PATH/helm/config"
 export AWS_DEFAULT_PROFILE="rf_preprod"
 export VAULT_ADDR="https://vault.dnm.radiofrance.fr"
 
