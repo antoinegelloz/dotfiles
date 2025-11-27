@@ -13,6 +13,9 @@
 [url "git@gitlab.dnm.radiofrance.fr:"]
     insteadOf = https://gitlab.dnm.radiofrance.fr/
 
+[url "ssh://git@gitlab.dnm.radiofrance.fr/"]
+    insteadOf = https://gitlab.dnm.radiofrance.fr/
+
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge --skip -- %f

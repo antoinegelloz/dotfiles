@@ -191,6 +191,7 @@ export REFERENTIEL_PATH="$HOME/radiofrance/referentiel-version"
 export HELM_CONFIG_HOME="$REFERENTIEL_PATH/helm/config"
 export AWS_DEFAULT_PROFILE="rf_preprod"
 export VAULT_ADDR="https://vault.dnm.radiofrance.fr"
+export GONOSUMDB="gitlab.dnm.radiofrance.fr/*"
 
 export BUILDKIT_HOST="unix:///Users/antoinegelloz/.lima/default/sock/buildkitd.sock"
 
@@ -202,3 +203,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+. "$HOME/.local/bin/env"
+export DYLD_LIBRARY_PATH="/opt/homebrew/lib:$DYLD_LIBRARY_PATH"
