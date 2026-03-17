@@ -2,7 +2,7 @@
 	name = Antoine Gelloz
 	email = antoine.gelloz@gmail.com
 	username = antoinegelloz
-	signingkey = 18EB610C24DEA453
+	signingkey = /Users/antoinegelloz/.ssh/id_ed25519.pub
 
 [url "git@github.com:"]
 	insteadOf = https://github.com/
@@ -72,3 +72,5 @@
 
 [pull]
 	rebase = true
+[gpg]
+	format = ssh
