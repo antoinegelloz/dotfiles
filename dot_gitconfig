@@ -61,10 +61,12 @@
 	updateRefs = true
 
 [core]
-	fsmonitor = true
 	untrackedCache = true
+	fsmonitor = false
 
 [pull]
 	rebase = true
 [gpg]
 	format = ssh
+[feature]
+	experimental = false
