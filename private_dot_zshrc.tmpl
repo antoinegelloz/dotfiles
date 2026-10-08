@@ -135,7 +135,6 @@ gitclean() {
 # Secrets are stored in the macOS Keychain (see README) and injected here at
 # `chezmoi apply` time — never written to this template in plaintext.
 export CODESTRAL_API_KEY="{{ keyring "codestral-api-key" .chezmoi.username }}"
-export LINODE_TOKEN="{{ keyring "linode-token" .chezmoi.username }}"
 
 #####################
 ### Machine-local ###

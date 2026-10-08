@@ -20,7 +20,6 @@ These services must exist in the macOS Keychain before `apply` (see
 | service             | used for            |
 |----------------------|----------------------|
 | `codestral-api-key`  | `CODESTRAL_API_KEY`  |
-| `linode-token`       | `LINODE_TOKEN`       |
 
 Set one with:
 
