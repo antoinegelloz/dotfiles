@@ -2,7 +2,7 @@
 # Bootstrap a new machine: Homebrew + packages, oh-my-zsh, chezmoi source, git hooks.
 set -euo pipefail
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 # Homebrew
 if ! command -v brew >/dev/null 2>&1; then
@@ -21,7 +21,7 @@ fi
 
 # Point chezmoi at this repo
 mkdir -p ~/.config/chezmoi
-cat > ~/.config/chezmoi/chezmoi.toml <<TOML
+cat >~/.config/chezmoi/chezmoi.toml <<TOML
 sourceDir = "$SCRIPT_DIR"
 TOML
 echo "chezmoi source set to $SCRIPT_DIR."
@@ -34,3 +34,6 @@ echo "  1. Store secrets in the macOS Keychain (see README.md), e.g.:"
 echo "     chezmoi secret keyring set --service=codestral-api-key --user=\$(whoami) --value=..."
 echo "  2. chezmoi apply -v"
 echo "  3. mise install"
+echo "Optional (machine-local, never committed; see README.md):"
+echo "  - job-specific *.work / work.toml source files"
+echo "  - .githooks/blocklist for the pre-commit hook"

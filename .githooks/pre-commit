@@ -19,8 +19,8 @@ fi
 blocklist="$root/.githooks/blocklist"
 if [[ -s "$blocklist" ]]; then
   patterns=$(grep -v -E '^\s*(#|$)' "$blocklist" || true)
-  if [[ -n "$patterns" ]] && git diff --cached -U0 --no-color | grep -E '^\+' | grep -v -E '^\+\+\+ ' \
-      | grep -i -E -f <(printf '%s\n' "$patterns"); then
+  if [[ -n "$patterns" ]] && git diff --cached -U0 --no-color | grep -E '^\+' | grep -v -E '^\+\+\+ ' |
+    grep -i -E -f <(printf '%s\n' "$patterns"); then
     echo "pre-commit: the added lines above match .githooks/blocklist (job-specific content?)." >&2
     exit 1
   fi

@@ -1,3 +1,5 @@
+# Repo-only files that chezmoi must not deploy to $HOME
+# (dotfiles such as .githooks/ and .editorconfig are ignored automatically).
 README.md
 install.sh
 Brewfile

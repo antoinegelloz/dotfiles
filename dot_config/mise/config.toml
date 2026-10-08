@@ -1,5 +1,5 @@
-# Global tool versions (replaces nvm). `mise use -g <tool>@<version>` updates this file;
-# re-add it to chezmoi afterwards with `chezmoi re-add`.
+# Global tool versions (replaces nvm and pyenv). `mise use -g <tool>@<version>` edits the
+# deployed copy of this file: run `chezmoi re-add` afterwards to bring it back here.
 
 [tools]
 node = "25"

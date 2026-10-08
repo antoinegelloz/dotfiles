@@ -1,0 +1,7 @@
+# Third-party files chezmoi fetches into $HOME (refreshed weekly by `chezmoi apply`).
+# https://www.chezmoi.io/reference/special-files/chezmoiexternal-format/
+
+[".vim/pack/plugins/start/vim-go"]
+type = "git-repo"
+url = "https://github.com/fatih/vim-go.git"
+refreshPeriod = "168h"

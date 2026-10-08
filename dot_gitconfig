@@ -1,9 +1,17 @@
+# Global git config. Job-specific overrides are included from ~/.gitconfig.work (see bottom).
+
 [user]
 	name = Antoine Gelloz
 	email = antoine.gelloz@gmail.com
 	username = antoinegelloz
 	signingkey = /Users/antoinegelloz/.ssh/id_ed25519.pub
 
+[core]
+	editor = /usr/bin/vim
+	untrackedCache = true
+	fsmonitor = false
+
+# Always use SSH for GitHub, even for https:// URLs
 [url "git@github.com:"]
 	insteadOf = https://github.com/
 
@@ -16,16 +24,28 @@
 	process = git-lfs filter-process --skip
 	required = true
 
-# From https://blog.gitbutler.com/how-git-core-devs-configure-git/
+# Sign commits and tags with the SSH key
+[commit]
+	verbose = true
+	gpgSign = true
+
+[tag]
+	sort = version:refname
+	gpgSign = true
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	# Lets `git log --show-signature` / `git verify-commit` verify your own commits
+	allowedSignersFile = ~/.config/git/allowed_signers
+
+# Defaults from https://blog.gitbutler.com/how-git-core-devs-configure-git/
 [column]
 	ui = auto
 
 [branch]
 	sort = -committerdate
-
-[tag]
-	sort = version:refname
-	gpgSign = true
 
 [init]
 	defaultBranch = main
@@ -40,36 +60,21 @@
 	pruneTags = true
 	all = true
 
-[help]
-	autocorrect = prompt
-
-[commit]
-	verbose = true
-	gpgsign = true
-
-[rerere]
-	enabled = true
-	autoupdate = true
-
-[core]
-	editor = /usr/bin/vim
+[pull]
+	rebase = true
 
 [rebase]
 	autoSquash = true
 	autoStash = true
 	updateRefs = true
 
-[core]
-	untrackedCache = true
-	fsmonitor = false
+[rerere]
+	enabled = true
+	autoupdate = true
 
-[pull]
-	rebase = true
-[gpg]
-	format = ssh
-[gpg "ssh"]
-	# Lets `git log --show-signature` / `git verify-commit` verify your own commits
-	allowedSignersFile = ~/.config/git/allowed_signers
+[help]
+	autocorrect = prompt
+
 [feature]
 	experimental = false
 

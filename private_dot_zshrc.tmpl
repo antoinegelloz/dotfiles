@@ -1,5 +1,11 @@
-# Environment & PATH first, so oh-my-zsh and its plugins see the final PATH.
+# Interactive zsh config, rendered by chezmoi from ~/dotfiles/private_dot_zshrc.tmpl.
+# Edit with `zshrc` (alias below), not in place: `chezmoi apply` would overwrite it.
 
+###################
+### Environment ###
+###################
+
+# Set before oh-my-zsh, so OMZ and its plugins see the final PATH.
 export EDITOR='vim'
 export GPG_TTY=$(tty)
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
@@ -16,7 +22,7 @@ path=(
   $path
 )
 
-# mise: per-project tool versions (node, ...), see ~/.config/mise/config.toml
+# mise: global & per-project tool versions (node, python, npm tools), see ~/.config/mise/config.toml
 eval "$(mise activate zsh)"
 
 #################
@@ -36,7 +42,7 @@ plugins=(git kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
-# History: OMZ keeps only 10k lines on disk; keep (much) more. Set after OMZ, which overrides these.
+# History: OMZ keeps only 10k lines on disk. Set after OMZ, which overrides these.
 HISTSIZE=100000
 SAVEHIST=100000
 
@@ -57,10 +63,10 @@ source <(fzf --zsh)
 alias zshrc="chezmoi edit --apply ~/.zshrc"
 alias history="omz_history -i"
 alias update="brew update && brew upgrade && brew cleanup"
+alias goclean="go clean -cache -testcache -modcache -fuzzcache"
 
 # Run Homebrew without GNU coreutils on PATH: source builds (e.g. GMP) expect the BSD tools.
 brew() { PATH=${PATH//\/opt\/homebrew\/opt\/coreutils\/libexec\/gnubin:/} command brew "$@" }
-alias goclean="go clean -cache -testcache -modcache -fuzzcache"
 
 # Clean Git repositories: fetch/prune, checkout default branch, optional pull on main/master, delete stale branches.
 # Usage: gitclean [repo_path] (if no path, runs recursively from depth 2)

@@ -1,9 +1,18 @@
+# Global gitignore (git's default location, no core.excludesFile needed)
+
+# macOS
 .DS_Store
+
+# Secrets / local env
 .env
+
+# Build output
 dist/
+
+# Editors
 .idea
 .vscode
 
+# Claude Code local state
 **/.claude/settings.local.json
-
 **/.claude/.cc-writes/
