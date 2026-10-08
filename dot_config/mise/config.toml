@@ -1,7 +1,8 @@
-# Global tool versions (replaces nvm and pyenv). `mise use -g <tool>@<version>` edits the
+# Global tool versions (replaces nvm, pyenv and the Go .pkg installer). `mise use -g <tool>@<version>` edits the
 # deployed copy of this file: run `chezmoi re-add` afterwards to bring it back here.
 
 [tools]
+go = "1.27" # default Go only: projects get their go.mod version via GOTOOLCHAIN=auto
 node = "25"
 python = "3.14.8"
 "npm:@google/gemini-cli" = "latest"
@@ -10,3 +11,8 @@ python = "3.14.8"
 [settings]
 # Keep honoring .nvmrc / .node-version / .python-version files in projects (nvm, pyenv)
 idiomatic_version_file_enable_tools = ["node", "python"]
+
+[settings.go]
+# Keep `go install` binaries in ~/go/bin (on PATH) instead of the per-version
+# install dir, so they survive Go upgrades
+set_gobin = false

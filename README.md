@@ -18,7 +18,7 @@ git-ignored files (see [Job-specific config](#job-specific-config)).
 | `dot_config/git/ignore`          | `~/.config/git/ignore`          | Global gitignore                                               |
 | `dot_config/git/allowed_signers` | `~/.config/git/allowed_signers` | Verifies my SSH-signed commits locally                         |
 | `private_dot_ssh/private_config` | `~/.ssh/config` (0600)          | SSH defaults; includes OrbStack and job-specific hosts         |
-| `dot_config/mise/config.toml`    | `~/.config/mise/config.toml`    | Global tool versions: node, python, npm CLIs                   |
+| `dot_config/mise/config.toml`    | `~/.config/mise/config.toml`    | Global tool versions: go, node, python, npm CLIs               |
 | `dot_config/gh/config.yml`       | `~/.config/gh/config.yml`       | GitHub CLI settings (auth stays in `hosts.yml`, not tracked)   |
 | `dot_config/zed/settings.json`   | `~/.config/zed/settings.json`   | Zed editor settings                                            |
 | `dot_vimrc`                      | `~/.vimrc`                      | Vim                                                            |
@@ -36,7 +36,7 @@ and `.tmpl` files are rendered as [templates](https://www.chezmoi.io/user-guide/
 ```sh
 git clone git@github.com:antoinegelloz/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-./install.sh   # Homebrew + Brewfile, oh-my-zsh, chezmoi source dir, git hooks
+./install.sh   # Homebrew, chezmoi source dir, mise tools, Brewfile, oh-my-zsh, git hooks
 ```
 
 Then:
@@ -45,8 +45,7 @@ Then:
 2. Optionally recreate the [job-specific files](#job-specific-config) and the
    [hook blocklist](#pre-commit-hook): they are not in the repo.
 3. `chezmoi apply -v`
-4. `mise install` (node, python and npm tools)
-5. Open a new terminal.
+4. Open a new terminal.
 
 ## Day-to-day
 
