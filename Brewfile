@@ -8,8 +8,6 @@ brew "argocd"
 brew "python@3.14"
 # Official Amazon AWS command-line interface
 brew "awscli"
-# Microsoft Azure CLI 2.0
-brew "azure-cli"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Manage your dotfiles across multiple diverse machines, securely
@@ -72,8 +70,6 @@ brew "openshift-cli"
 brew "pinentry-mac"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
-# Python version management
-brew "pyenv"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Work with remote images registries
@@ -88,6 +84,8 @@ brew "yamllint"
 brew "atlassian/acli/acli"
 # Vault
 brew "hashicorp/tap/vault"
+# Microsoft Azure CLI
+cask "azure-cli"
 # Web browser
 cask "firefox"
 # UI for Kubernetes

@@ -57,6 +57,9 @@ source <(fzf --zsh)
 alias zshrc="chezmoi edit --apply ~/.zshrc"
 alias history="omz_history -i"
 alias update="brew update && brew upgrade && brew cleanup"
+
+# Run Homebrew without GNU coreutils on PATH: source builds (e.g. GMP) expect the BSD tools.
+brew() { PATH=${PATH//\/opt\/homebrew\/opt\/coreutils\/libexec\/gnubin:/} command brew "$@" }
 alias goclean="go clean -cache -testcache -modcache -fuzzcache"
 
 # Clean Git repositories: fetch/prune, checkout default branch, optional pull on main/master, delete stale branches.

@@ -3,9 +3,10 @@
 
 [tools]
 node = "25"
+python = "3.14"
 "npm:@google/gemini-cli" = "latest"
 "npm:prettier" = "latest"
 
 [settings]
-# Keep honoring .nvmrc / .node-version files in projects
-idiomatic_version_file_enable_tools = ["node"]
+# Keep honoring .nvmrc / .node-version / .python-version files in projects (nvm, pyenv)
+idiomatic_version_file_enable_tools = ["node", "python"]
