@@ -3,7 +3,7 @@
 
 [tools]
 node = "25"
-python = "3.14"
+python = "3.14.8"
 "npm:@google/gemini-cli" = "latest"
 "npm:prettier" = "latest"
 
