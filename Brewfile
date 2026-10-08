@@ -2,7 +2,6 @@ tap "atlassian/acli", trusted: true
 tap "domt4/autoupdate", trusted: true
 tap "goreleaser/tap", trusted: true
 tap "hashicorp/tap", trusted: true
-tap "sikarugir-app/sikarugir", trusted: true
 # GitOps Continuous Delivery for Kubernetes
 brew "argocd"
 # Interpreted, interactive, object-oriented programming language
@@ -101,8 +100,6 @@ cask "macfuse"
 cask "ngrok"
 # Replacement for Docker Desktop
 cask "orbstack"
-# Wine wrapper for running Windows apps
-cask "sikarugir-app/sikarugir/sikarugir"
 # System monitor for the menu bar
 cask "stats"
 # Developer experience toolkit used to check, test, merge, and monitor code
