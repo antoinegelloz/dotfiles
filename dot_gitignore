@@ -5,3 +5,5 @@ dist/
 .vscode
 
 **/.claude/settings.local.json
+
+**/.claude/.cc-writes/

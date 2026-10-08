@@ -1,0 +1,3 @@
+# Job-specific dotfiles: deployed by chezmoi, never pushed to the public repo.
+*.work
+*.work.tmpl

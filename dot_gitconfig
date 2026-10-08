@@ -70,3 +70,7 @@
 	format = ssh
 [feature]
 	experimental = false
+
+# Machine-local / job-specific overrides (not in the public repo; ignored if missing)
+[include]
+	path = ~/.gitconfig.work

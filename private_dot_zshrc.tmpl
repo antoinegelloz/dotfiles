@@ -1,17 +1,57 @@
-export ZSH="$HOME/.oh-my-zsh"
+# Environment & PATH first, so oh-my-zsh and its plugins see the final PATH.
 
+export EDITOR='vim'
+export GPG_TTY=$(tty)
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+export DYLD_LIBRARY_PATH="/opt/homebrew/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"
+
+# nvm: load without auto-`use` (saves ~350ms per shell) and put the newest
+# installed node on PATH instead, which is what the `default -> node` alias resolves to.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" --no-use
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+
+# PATH, highest priority first. `typeset -U` drops duplicates (nested shells).
+typeset -U path
+path=(
+  $HOME/.local/bin
+  $NVM_DIR/versions/node/*/bin(Nn[-1])
+  ${KREW_ROOT:-$HOME/.krew}/bin
+  # GNU coreutils under their plain names (ls, date, sed...) instead of the BSD ones.
+  /opt/homebrew/opt/coreutils/libexec/gnubin
+  $HOME/go/bin
+  $path
+)
+
+#################
+### oh-my-zsh ###
+#################
+
+export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="kardan"
 
 zstyle ':omz:update' mode auto      # update automatically without asking
 zstyle ':omz:update' frequency 13
+# GNU coreutils are first on PATH, where OMZ's default macOS `ls -G` means
+# "no group column" rather than "color": use `gls --color` instead.
+zstyle ':omz:lib:theme-and-appearance' gnu-ls yes
 
 plugins=(git kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
-export EDITOR='vim'
+###################
+### Completions ###
+###################
 
-alias zshrc="vim ~/.zshrc"
+source <(kubie generate-completion)
+
+###########################
+### Aliases & functions ###
+###########################
+
+# ~/.zshrc is rendered by chezmoi: edit the source template, then apply.
+alias zshrc="chezmoi edit --apply ~/.zshrc"
 alias history="omz_history -i"
 alias update="brew update && brew upgrade && brew cleanup"
 alias goclean="go clean -cache -testcache -modcache -fuzzcache"
@@ -88,34 +128,19 @@ gitclean() {
   unfunction _gitclean_one 2>/dev/null
 }
 
-export PATH="$HOME/go/bin:$PATH"
-
-export GPG_TTY=$(tty)
-
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-
-source <(kubie generate-completion)
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-
-. "$HOME/.local/bin/env"
-export DYLD_LIBRARY_PATH="/opt/homebrew/lib:$DYLD_LIBRARY_PATH"
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/antoinegelloz/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/antoinegelloz/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/antoinegelloz/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/antoinegelloz/google-cloud-sdk/completion.zsh.inc'; fi
-
-export PATH="/Users/antoinegelloz/.terragrunt/bin:$PATH"
+###############
+### Secrets ###
+###############
 
 # Secrets are stored in the macOS Keychain (see README) and injected here at
 # `chezmoi apply` time — never written to this template in plaintext.
 export CODESTRAL_API_KEY="{{ keyring "codestral-api-key" .chezmoi.username }}"
-
-export GITLAB_TOKEN="{{ keyring "gitlab-token" .chezmoi.username }}"
 export LINODE_TOKEN="{{ keyring "linode-token" .chezmoi.username }}"
+
+#####################
+### Machine-local ###
+#####################
+
+# Job-specific config (env, PATH, tokens) lives in ~/.zshrc.work, rendered by
+# chezmoi from a git-ignored source file so it never reaches the public repo.
+[ -f ~/.zshrc.work ] && source ~/.zshrc.work

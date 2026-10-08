@@ -18,6 +18,6 @@ TOML
 
 echo "chezmoi source set to $SCRIPT_DIR."
 echo "Before applying, store personal secrets in the macOS Keychain, e.g.:"
-echo "  chezmoi secret keyring set --service=gitlab-token --user=\$(whoami) --value=..."
+echo "  chezmoi secret keyring set --service=linode-token --user=\$(whoami) --value=..."
 echo "See README.md for the full list of expected secrets."
 echo "Then run: chezmoi apply -v"
