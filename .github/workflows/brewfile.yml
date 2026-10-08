@@ -1,0 +1,30 @@
+name: Brewfile
+
+# Weekly: catch formulae/casks that Homebrew removed, deprecated or moved,
+# long before the next new-machine setup trips on them.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  push:
+    branches: [main]
+    paths:
+      - Brewfile
+      - .github/scripts/check-brewfile.sh
+      - .github/workflows/brewfile.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_ANALYTICS: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - run: .github/scripts/check-brewfile.sh

@@ -1,0 +1,35 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # gitleaks scans the full history
+          persist-credentials: false
+
+      - uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
+
+      # The blocklist is private (it names what must stay out of this repo), so it
+      # comes from a repository secret instead of being committed.
+      - name: Restore blocklist
+        env:
+          BLOCKLIST: ${{ secrets.BLOCKLIST }}
+        run: |
+          if [ -n "$BLOCKLIST" ]; then
+            printf '%s\n' "$BLOCKLIST" > .githooks/blocklist
+          else
+            echo "::warning::BLOCKLIST secret not set: blocklist check skipped"
+          fi
+
+      - run: mise run lint

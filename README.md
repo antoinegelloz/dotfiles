@@ -25,6 +25,7 @@ git-ignored files (see [Job-specific config](#job-specific-config)).
 | `.chezmoiexternal.toml`          | `~/.vim/pack/plugins/start/…`   | Third-party checkouts chezmoi keeps updated (vim-go)           |
 | `Brewfile`                       | —                               | Homebrew formulae, casks, VS Code extensions, Go/uv/krew tools |
 | `install.sh`                     | —                               | New machine bootstrap                                          |
+| `.mise.toml`, `.github/`         | —                               | Lint tasks and CI (see [Checks and CI](#checks-and-ci))        |
 | `.githooks/pre-commit`           | —                               | Blocks commits containing secrets or job-specific strings      |
 
 `dot_` becomes a leading `.`, `private_` makes the target readable only by me,
@@ -118,6 +119,29 @@ comments:
 acme ?corp
 \.acme\.internal
 ```
+
+## Checks and CI
+
+`mise run lint` runs every check with the tool versions pinned in `.mise.toml`:
+ShellCheck and shfmt, Prettier, actionlint, gitleaks over the full history,
+and the blocklist over tracked files. The same command runs in GitHub Actions:
+
+- **Lint** (`.github/workflows/lint.yml`): on every push to `main` and on pull
+  requests. The blocklist comes from the `BLOCKLIST` repository secret; failures
+  print only `file:line`, since workflow logs are public. Update the secret after
+  editing the local blocklist:
+
+  ```sh
+  gh secret set BLOCKLIST < .githooks/blocklist
+  ```
+
+- **Brewfile** (`.github/workflows/brewfile.yml`): weekly on macOS, and when
+  the `Brewfile` changes. Fails if an entry was removed, deprecated, disabled or
+  moved (e.g. a formula that became a cask). Run it locally with
+  `.github/scripts/check-brewfile.sh`.
+
+CI only reports problems once they are pushed: the pre-commit hook remains the
+guard that keeps them out of the public history.
 
 ## Not managed here
 

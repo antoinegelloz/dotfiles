@@ -1,0 +1,53 @@
+# Repo tooling: `mise run lint` runs the same checks locally and in CI (.github/workflows/lint.yml).
+# Dot-prefixed, so chezmoi does not deploy it to $HOME.
+
+[tools]
+actionlint = "1.7.12"
+gitleaks = "8.30.1"
+node = "25"
+"npm:prettier" = "3.9.9"
+shellcheck = "0.11.0"
+shfmt = "3.14.1"
+
+[tasks.lint]
+description = "Run all checks"
+depends = ["lint:*"]
+
+[tasks."lint:shell"]
+description = "ShellCheck and shfmt (style from .editorconfig)"
+run = [
+  "shellcheck install.sh .githooks/pre-commit .github/scripts/*.sh",
+  "shfmt --diff install.sh .githooks/pre-commit .github/scripts/*.sh",
+]
+
+[tasks."lint:format"]
+description = "Prettier on Markdown and workflow YAML"
+run = "prettier --check README.md '.github/**/*.yml'"
+
+[tasks."lint:workflows"]
+description = "actionlint on GitHub Actions workflows"
+run = "actionlint"
+
+[tasks."lint:secrets"]
+description = "gitleaks over the full git history"
+run = "gitleaks git --redact --no-banner ."
+
+[tasks."lint:blocklist"]
+description = "Tracked files must not match .githooks/blocklist (prints file:line only)"
+shell = "bash -c"
+run = '''
+set -euo pipefail
+f=.githooks/blocklist
+if [[ ! -s $f ]]; then
+  echo "No $f: skipping."
+  exit 0
+fi
+patterns=$(grep -v -E '^\s*(#|$)' "$f" || true)
+if [[ -n $patterns ]] && hits=$(git grep -n -I -i -E -f <(printf '%s\n' "$patterns")); then
+  # Only locations: in CI the logs are public, and the matches are what we want to keep out of them.
+  echo "Job-specific strings found at:" >&2
+  cut -d: -f1,2 <<<"$hits" >&2
+  exit 1
+fi
+echo "No blocklisted strings in tracked files."
+'''
