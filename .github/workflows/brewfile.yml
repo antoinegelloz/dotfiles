@@ -20,11 +20,14 @@ jobs:
   check:
     runs-on: macos-latest
     env:
-      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_AUTO_UPDATE: 1 # updated once, explicitly, below
       HOMEBREW_NO_ANALYTICS: 1
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      # The runner image ships an older Homebrew: check against current data, as a new machine would.
+      - run: brew update --quiet
 
       - run: .github/scripts/check-brewfile.sh

@@ -15,7 +15,11 @@ list --tap >"$tmp/taps"
 list --formula >"$tmp/formulae"
 list --cask >"$tmp/casks"
 
-while read -r tap; do brew tap --quiet "$tap"; done <"$tmp/taps"
+# Taps listed in the Brewfile are trusted (`trusted: true`), as `brew bundle` would do.
+while read -r tap; do
+  brew tap --quiet "$tap"
+  if brew trust --help >/dev/null 2>&1; then brew trust --quiet --tap "$tap" >/dev/null; fi
+done <"$tmp/taps"
 
 problems=0
 report() {
