@@ -52,7 +52,6 @@
 	autoupdate = true
 
 [core]
-	excludesfile = ~/.gitignore
 	editor = /usr/bin/vim
 
 [rebase]
@@ -68,6 +67,9 @@
 	rebase = true
 [gpg]
 	format = ssh
+[gpg "ssh"]
+	# Lets `git log --show-signature` / `git verify-commit` verify your own commits
+	allowedSignersFile = ~/.config/git/allowed_signers
 [feature]
 	experimental = false
 

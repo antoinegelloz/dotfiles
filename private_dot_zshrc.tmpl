@@ -5,23 +5,19 @@ export GPG_TTY=$(tty)
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 export DYLD_LIBRARY_PATH="/opt/homebrew/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"
 
-# nvm: load without auto-`use` (saves ~350ms per shell) and put the newest
-# installed node on PATH instead, which is what the `default -> node` alias resolves to.
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" --no-use
-[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-
 # PATH, highest priority first. `typeset -U` drops duplicates (nested shells).
 typeset -U path
 path=(
   $HOME/.local/bin
-  $NVM_DIR/versions/node/*/bin(Nn[-1])
   ${KREW_ROOT:-$HOME/.krew}/bin
   # GNU coreutils under their plain names (ls, date, sed...) instead of the BSD ones.
   /opt/homebrew/opt/coreutils/libexec/gnubin
   $HOME/go/bin
   $path
 )
+
+# mise: per-project tool versions (node, ...), see ~/.config/mise/config.toml
+eval "$(mise activate zsh)"
 
 #################
 ### oh-my-zsh ###
@@ -40,11 +36,18 @@ plugins=(git kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
+# History: OMZ keeps only 10k lines on disk; keep (much) more. Set after OMZ, which overrides these.
+HISTSIZE=100000
+SAVEHIST=100000
+
 ###################
 ### Completions ###
 ###################
 
 source <(kubie generate-completion)
+
+# fzf: Ctrl-R fuzzy history, Ctrl-T file picker, Alt-C fuzzy cd
+source <(fzf --zsh)
 
 ###########################
 ### Aliases & functions ###

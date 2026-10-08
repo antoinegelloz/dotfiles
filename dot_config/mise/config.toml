@@ -1,0 +1,11 @@
+# Global tool versions (replaces nvm). `mise use -g <tool>@<version>` updates this file;
+# re-add it to chezmoi afterwards with `chezmoi re-add`.
+
+[tools]
+node = "25"
+"npm:@google/gemini-cli" = "latest"
+"npm:prettier" = "latest"
+
+[settings]
+# Keep honoring .nvmrc / .node-version files in projects
+idiomatic_version_file_enable_tools = ["node"]

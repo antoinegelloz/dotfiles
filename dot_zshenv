@@ -1,0 +1,4 @@
+# Read by every zsh (including scripts): keep it minimal.
+
+# Apple Terminal's per-tab history (~/.zsh_sessions) duplicates the shared history.
+export SHELL_SESSIONS_DISABLE=1

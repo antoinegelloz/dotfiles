@@ -8,9 +8,13 @@ chezmoi's `keyring` template function, never stored in this repo.
 ## New machine setup
 
 ```sh
-./install.sh
+./install.sh      # Homebrew + Brewfile, oh-my-zsh, chezmoi source, git hooks
 chezmoi apply -v
+mise install      # node & npm tools from ~/.config/mise/config.toml
 ```
+
+Refresh the package list with `brew bundle dump --file=Brewfile --force`
+(drop the `npm` lines: npm tools are managed by mise).
 
 ## Secrets
 
@@ -35,8 +39,20 @@ here, see `~/.config/chezmoi/chezmoi.toml`), then run `chezmoi diff` /
 
 ## Job-specific config
 
-Work-only settings live in `*.work` / `*.work.tmpl` source files (e.g.
-`private_dot_zshrc.work.tmpl` → `~/.zshrc.work`, `dot_gitconfig.work` →
-`~/.gitconfig.work`). They are git-ignored, so chezmoi deploys them on this
-machine but they are never pushed. `~/.zshrc` sources and `~/.gitconfig`
-includes them only if present.
+Work-only settings live in git-ignored source files, so chezmoi deploys them on
+this machine but they are never pushed:
+
+| source                              | target                        | used by                     |
+|-------------------------------------|-------------------------------|-----------------------------|
+| `private_dot_zshrc.work.tmpl`       | `~/.zshrc.work`               | sourced by `~/.zshrc`       |
+| `dot_gitconfig.work`                | `~/.gitconfig.work`           | included by `~/.gitconfig`  |
+| `private_dot_ssh/private_config.work` | `~/.ssh/config.work`        | included by `~/.ssh/config` |
+| `dot_config/mise/conf.d/work.toml`  | `~/.config/mise/conf.d/work.toml` | loaded by mise          |
+
+Each is optional: delete them (source and target) when leaving the job.
+
+## Pre-commit hook
+
+`.githooks/pre-commit` (enabled by `install.sh` via `core.hooksPath`) blocks a
+commit if `gitleaks` finds a secret, or if added lines match a regex from
+`.githooks/blocklist`, a local git-ignored list of job-specific strings.

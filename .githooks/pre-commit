@@ -1,0 +1,27 @@
+#!/bin/bash
+# Refuse commits that would publish secrets or job-specific details.
+# Enabled per clone with: git config core.hooksPath .githooks (done by install.sh)
+set -euo pipefail
+
+root=$(git rev-parse --show-toplevel)
+
+if command -v gitleaks >/dev/null; then
+  gitleaks git --pre-commit --staged --redact --no-banner --log-level error "$root" || {
+    echo "pre-commit: gitleaks found a possible secret (see above)." >&2
+    exit 1
+  }
+else
+  echo "pre-commit: gitleaks not installed, skipping secret scan." >&2
+fi
+
+# .githooks/blocklist: one extended regex per line (case-insensitive), # comments allowed.
+# It is git-ignored, since publishing it would leak what it protects.
+blocklist="$root/.githooks/blocklist"
+if [[ -s "$blocklist" ]]; then
+  patterns=$(grep -v -E '^\s*(#|$)' "$blocklist" || true)
+  if [[ -n "$patterns" ]] && git diff --cached -U0 --no-color | grep -E '^\+' | grep -v -E '^\+\+\+ ' \
+      | grep -i -E -f <(printf '%s\n' "$patterns"); then
+    echo "pre-commit: the added lines above match .githooks/blocklist (job-specific content?)." >&2
+    exit 1
+  fi
+fi

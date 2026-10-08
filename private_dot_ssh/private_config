@@ -1,0 +1,11 @@
+## User specific overrides #####################################################
+
+Include ~/.orbstack/ssh/config
+
+# Job-specific hosts (git-ignored in ~/dotfiles; silently skipped if missing)
+Include ~/.ssh/config.work
+
+Host *
+  SetEnv TERM=xterm-256color
+  ServerAliveInterval 100
+  TCPKeepAlive yes

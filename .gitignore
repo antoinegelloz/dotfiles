@@ -1,3 +1,7 @@
 # Job-specific dotfiles: deployed by chezmoi, never pushed to the public repo.
 *.work
 *.work.tmpl
+work.toml
+
+# Patterns the pre-commit hook refuses to commit (kept local: they would leak what they protect)
+.githooks/blocklist
