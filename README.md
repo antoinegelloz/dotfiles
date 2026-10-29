@@ -19,6 +19,7 @@ git-ignored files (see [Job-specific config](#job-specific-config)).
 | `dot_config/git/ignore`          | `~/.config/git/ignore`          | Global gitignore                                               |
 | `dot_config/git/allowed_signers` | `~/.config/git/allowed_signers` | Verifies my SSH-signed commits locally                         |
 | `private_dot_ssh/private_config` | `~/.ssh/config` (0600)          | SSH defaults; includes OrbStack and job-specific hosts         |
+| `dot_kube/kubie.yaml`            | `~/.kube/kubie.yaml`            | kubie: own prompt off, the zsh theme shows the context instead |
 | `dot_config/mise/config.toml`    | `~/.config/mise/config.toml`    | Global tool versions: go, node, python, npm CLIs               |
 | `dot_config/gh/config.yml`       | `~/.config/gh/config.yml`       | GitHub CLI settings (auth stays in `hosts.yml`, not tracked)   |
 | `dot_config/zed/settings.json`   | `~/.config/zed/settings.json`   | Zed editor settings                                            |
