@@ -7,6 +7,7 @@ node = "25"
 python = "3.14.8"
 "npm:@google/gemini-cli" = "latest"
 "npm:prettier" = "latest"
+golangci-lint = "latest"
 
 [settings]
 # Keep honoring .nvmrc / .node-version / .python-version files in projects (nvm, pyenv)
