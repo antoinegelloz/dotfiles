@@ -12,6 +12,7 @@ git-ignored files (see [Job-specific config](#job-specific-config)).
 | Source                           | Target in `$HOME`               | Purpose                                                        |
 | -------------------------------- | ------------------------------- | -------------------------------------------------------------- |
 | `private_dot_zshrc.tmpl`         | `~/.zshrc` (0600)               | Interactive zsh: PATH, oh-my-zsh, mise, fzf, aliases, secrets  |
+| `dot_config/oh-my-zsh/`          | `~/.config/oh-my-zsh/`          | `$ZSH_CUSTOM`: the `kardan-color` prompt theme                 |
 | `dot_zprofile`                   | `~/.zprofile`                   | Login shells: Homebrew, mise shims, app-installed CLIs         |
 | `dot_zshenv`                     | `~/.zshenv`                     | Every zsh: disables Apple Terminal per-tab sessions            |
 | `dot_gitconfig`                  | `~/.gitconfig`                  | Git: SSH signing, GitHub over SSH, sane defaults               |
