@@ -10,8 +10,9 @@ PROMPT='%(?.%F{cyan}.%F{red})%B❯%b%f '
 # Exit code (only when non-zero), kubectl context, cwd, git branch and state, short hostname.
 RPROMPT='%(?..%F{red}✘ %?%f  )$(kube_ps1)%F{cyan}%~%f$(git_prompt_info) %F{242}@%m%f'
 
-# kube-ps1 plugin: hidden without a context (`kubeoff`/`kubeon` toggle it per shell).
-# The trailing space lives in the suffix so nothing is left over when it's hidden.
+# kube-ps1 plugin: off by default, `kubeon`/`kubeoff` toggle it per shell (-g: everywhere).
+# Hidden without a context; the trailing space lives in the suffix so nothing is left over.
+KUBE_PS1_ENABLED=off
 KUBE_PS1_HIDE_IF_NOCONTEXT=true
 KUBE_PS1_PREFIX_COLOR=242
 KUBE_PS1_SUFFIX=") "
