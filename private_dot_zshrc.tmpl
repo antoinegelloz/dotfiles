@@ -80,74 +80,39 @@ alias goclean="go clean -cache -testcache -modcache -fuzzcache"
 brew() { PATH=${PATH//\/opt\/homebrew\/opt\/coreutils\/libexec\/gnubin:/} command brew "$@" }
 
 # Clean Git repositories: fetch/prune, checkout default branch, optional pull on main/master, delete stale branches.
-# Usage: gitclean [repo_path] (if no path, runs recursively from depth 2)
+# Usage: gitclean [repo_path] (no path: every repo below the current dir)
 gitclean() {
   _gitclean_one() {
-    local current_branch default_branch
-    current_branch=$(git branch --show-current)
-
-    echo "--- Cleaning $(pwd) ---"
-    if ! git fetch --prune; then
-      echo "Warning: fetch failed, skipping $(pwd)." >&2
-      return 1
+    local cur def
+    echo "--- $(pwd)"
+    git fetch --prune -q || { echo "fetch failed, skipping" >&2; return 1; }
+    # Stale worktrees keep their branch checked out, which blocks its deletion
+    git worktree prune
+    def=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) && def=${def#origin/}
+    [[ -z $def ]] && git show-ref -q --verify refs/remotes/origin/main && def=main
+    [[ -z $def ]] && def=master
+    cur=$(git branch --show-current)
+    # Leave the current branch alone unless its remote is gone
+    if [[ -n $cur && $cur != $def && $(git for-each-ref --format='%(upstream:track)' "refs/heads/$cur") == "[gone]" ]]; then
+      git checkout -q "$def" || return 1
+      cur=$def
     fi
-
-    # Determine default branch (main or master)
-    if git show-ref --verify --quiet refs/remotes/origin/main; then
-      default_branch="main"
-    elif git show-ref --verify --quiet refs/remotes/origin/master; then
-      default_branch="master"
+    if [[ $cur == $def ]]; then
+      [[ -z $(git status --porcelain) ]] && git pull -q --ff-only
+    else
+      git fetch -q origin "$def:$def" 2>/dev/null # fast-forward default branch without switching
     fi
-
-    # Checkout default branch first, so a stale current branch can be deleted below
-    if [[ -n "$default_branch" ]] && [[ "$current_branch" != "$default_branch" ]]; then
-      echo "Checking out $default_branch..."
-      if ! git checkout "$default_branch" 2>/dev/null; then
-        # Try checking out from remote if local doesn't exist
-        if git show-ref --verify --quiet "refs/remotes/origin/$default_branch"; then
-          git checkout --track "origin/$default_branch"
-        else
-          echo "Warning: Cannot checkout default branch $default_branch." >&2
-        fi
-      fi
-      current_branch=$(git branch --show-current)
-    fi
-
-    # Pull (fast-forward only) if on main/master and clean
-    if [ -z "$(git status --porcelain)" ] && [[ "$current_branch" =~ ^(main|master)$ ]]; then
-      echo "Pulling $current_branch..."
-      git pull --ff-only
-    fi
-
-    # Delete local branches whose remote counterpart is gone
-    echo "Deleting stale local branches..."
     git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads \
       | awk '$2=="[gone]" {print $1}' | xargs -r git branch -D
-
-    echo "--- Done $(pwd) ---"
   }
 
-  if [ $# -eq 1 ]; then
-    if [[ -d "$1/.git" ]]; then
-      pushd "$1" > /dev/null; _gitclean_one; popd > /dev/null
-    elif [[ "$1" == "." && -d ".git" ]]; then # Allow 'gitclean .'
-      _gitclean_one
-    else
-      echo "Error: '$1' is not a Git repository." >&2; return 1
-    fi
+  if [[ $# -eq 1 ]]; then
+    [[ -d $1/.git ]] || { echo "Error: '$1' is not a Git repository." >&2; return 1; }
+    (cd "$1" && _gitclean_one)
   else
-    # Find git repos starting 2 levels deep and process them
-    find . -mindepth 2 -type d -name .git -print0 | while IFS= read -r -d $'\0' gitdir; do
-      local dir
-      dir=$(dirname "$gitdir") # Get parent directory of .git
-      if [[ -d "$dir" ]]; then # Ensure it's a directory before proceeding
-        pushd "$dir" > /dev/null
-        _gitclean_one
-        popd > /dev/null
-      fi
-    done
+    find . -mindepth 2 -name .git -type d -prune -print0 \
+      | while IFS= read -r -d '' g; do (cd "${g:h}" && _gitclean_one); done
   fi
-
   unfunction _gitclean_one 2>/dev/null
 }
 
