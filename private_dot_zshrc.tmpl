@@ -79,7 +79,7 @@ alias goclean="go clean -cache -testcache -modcache -fuzzcache"
 # Run Homebrew without GNU coreutils on PATH: source builds (e.g. GMP) expect the BSD tools.
 brew() { PATH=${PATH//\/opt\/homebrew\/opt\/coreutils\/libexec\/gnubin:/} command brew "$@" }
 
-# Clean Git repositories: fetch/prune, checkout default branch, optional pull on main/master, delete stale branches.
+# Clean Git repositories: fetch/prune, prune stale worktrees, fast-forward the default branch, delete branches whose remote is gone.
 # Usage: gitclean [repo_path] (no path: every repo below the current dir)
 gitclean() {
   _gitclean_one() {
