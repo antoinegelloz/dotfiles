@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# Reclaim disk space from regenerable dev caches and unused container images.
+# Usage: cleanup [-n|--dry-run]
+set -uo pipefail
+
+DRY_RUN=0
+[[ "${1:-}" == "-n" || "${1:-}" == "--dry-run" ]] && DRY_RUN=1
+
+free_kb() { df -k / | awk 'NR==2 {print $4}'; }
+have() { command -v "$1" >/dev/null 2>&1; }
+running() { pgrep -xq "$1" || pgrep -fq "$1"; }
+
+run() {
+  echo "  → $*"
+  (( DRY_RUN )) || "$@" >/dev/null 2>&1 || echo "    (failed, continuing)"
+}
+
+remove_dir() {
+  local dir="$1"
+  [[ -e "$dir" ]] || return 0
+  echo "  → rm $dir ($(du -sh "$dir" 2>/dev/null | cut -f1))"
+  (( DRY_RUN )) || rm -rf "$dir"
+}
+
+before=$(free_kb)
+(( DRY_RUN )) && echo "Dry run: nothing will be deleted."
+
+echo "Package manager caches"
+have npm && run npm cache clean --force
+remove_dir "$HOME/.npm/_npx"
+have uv && run uv cache clean
+have brew && run brew cleanup --prune=all
+
+echo "Go caches"
+have go && run go clean -cache -testcache -modcache -fuzzcache
+have golangci-lint && run golangci-lint cache clean
+remove_dir "$HOME/.cache/trunk"
+
+echo "App caches (skipped while the app is running)"
+if running "JetBrains|idea|goland|pycharm|webstorm"; then
+  echo "  · JetBrains is running, skipping"
+else
+  remove_dir "$HOME/Library/Caches/JetBrains"
+fi
+remove_dir "$HOME/Library/Caches/com.anthropic.claudefordesktop.ShipIt"
+remove_dir "$HOME/Library/Caches/teleport-connect-updater"
+
+echo "Containers"
+if have container && container system status >/dev/null 2>&1; then
+  run container prune
+  run container image prune --all
+else
+  echo "  · container system not running, skipping"
+fi
+
+echo "Docker (OrbStack)"
+if have orb && have docker; then
+  was_stopped=0
+  [[ "$(orb status 2>/dev/null)" == "Stopped" ]] && was_stopped=1
+  (( was_stopped )) && run orb start
+  # --volumes only drops unused anonymous volumes; named ones (databases…) survive.
+  run docker system prune --all --volumes --force
+  # OrbStack hands freed blocks back to macOS on its own; stop only if we started it.
+  (( was_stopped )) && run orb stop
+else
+  echo "  · OrbStack not installed, skipping"
+fi
+
+after=$(free_kb)
+(( DRY_RUN )) || awk -v kb=$(( after - before )) -v free="$(df -h / | awk 'NR==2 {print $4}')" \
+  'BEGIN { printf "Reclaimed %.1f GB — %s free now.\n", kb / 1048576, free }'

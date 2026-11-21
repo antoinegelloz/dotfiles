@@ -74,7 +74,6 @@ export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-ran
 alias zshrc="chezmoi edit --apply ~/.zshrc"
 alias history="omz_history -i"
 alias update="brew update && brew upgrade && brew cleanup"
-alias goclean="go clean -cache -testcache -modcache -fuzzcache"
 
 # Run Homebrew without GNU coreutils on PATH: source builds (e.g. GMP) expect the BSD tools.
 brew() { PATH=${PATH//\/opt\/homebrew\/opt\/coreutils\/libexec\/gnubin:/} command brew "$@" }
