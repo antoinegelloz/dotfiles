@@ -54,14 +54,9 @@ else
 fi
 
 echo "Docker (OrbStack)"
-if have orb && have docker; then
-  was_stopped=0
-  [[ "$(orb status 2>/dev/null)" == "Stopped" ]] && was_stopped=1
-  (( was_stopped )) && run orb start
-  # --volumes only drops unused anonymous volumes; named ones (databases…) survive.
-  run docker system prune --all --volumes --force
-  # OrbStack hands freed blocks back to macOS on its own; stop only if we started it.
-  (( was_stopped )) && run orb stop
+if have orb; then
+  # Wipes ALL Docker data, named volumes included; a prune alone never shrinks OrbStack's disk image.
+  run orb reset -y
 else
   echo "  · OrbStack not installed, skipping"
 fi
