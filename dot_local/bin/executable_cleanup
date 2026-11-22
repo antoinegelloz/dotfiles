@@ -55,8 +55,18 @@ fi
 
 echo "Docker (OrbStack)"
 if have orb; then
-  # Wipes ALL Docker data, named volumes included; a prune alone never shrinks OrbStack's disk image.
-  run orb reset -y
+  if ! containers=$(docker ps -aq 2>/dev/null); then
+    # Stopped: we can't tell whether containers exist, so never reset blindly.
+    echo "  · OrbStack not running, skipping"
+  elif [[ -n "$containers" ]]; then
+    # Containers exist (e.g. seerr): keep them and their volumes, drop only what no container uses.
+    echo "  · $(wc -l <<<"$containers" | tr -d ' ') container(s) found, pruning instead of resetting"
+    run docker image prune --all --force
+    run docker builder prune --all --force
+  else
+    # No container: wipe everything; a prune alone never shrinks OrbStack's disk image.
+    run orb reset -y
+  fi
 else
   echo "  · OrbStack not installed, skipping"
 fi
