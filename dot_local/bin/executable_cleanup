@@ -34,7 +34,6 @@ have brew && run brew cleanup --prune=all
 echo "Go caches"
 have go && run go clean -cache -testcache -modcache -fuzzcache
 have golangci-lint && run golangci-lint cache clean
-remove_dir "$HOME/.cache/trunk"
 
 echo "App caches (skipped while the app is running)"
 if running "JetBrains|idea|goland|pycharm|webstorm"; then
@@ -42,8 +41,6 @@ if running "JetBrains|idea|goland|pycharm|webstorm"; then
 else
   remove_dir "$HOME/Library/Caches/JetBrains"
 fi
-remove_dir "$HOME/Library/Caches/com.anthropic.claudefordesktop.ShipIt"
-remove_dir "$HOME/Library/Caches/teleport-connect-updater"
 
 echo "Containers"
 if have container && container system status >/dev/null 2>&1; then
